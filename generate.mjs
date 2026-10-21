@@ -142,14 +142,14 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .grid a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 4px 8px;text-align:center;font-size:32px;transition:all .12s ease;position:relative}
 .grid a:hover{transform:translateY(-3px) scale(1.06);border-color:#ddd6fe;box-shadow:0 12px 24px -10px rgba(124,58,237,.25);background:#fff;z-index:2}
 .grid a small{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 4px 0}
-.cat{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:18px 0}
-.cat a{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:15.5px;font-weight:600;display:flex;gap:12px;align-items:center;transition:all .15s;box-shadow:var(--shadow)}
+.cat{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:18px 0}
+.cat a{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:15.5px;font-weight:600;display:flex;gap:12px;align-items:center;transition:all .15s;box-shadow:var(--shadow);white-space:nowrap;min-width:0}
 .cat a:hover{transform:translateY(-2px);border-color:#ddd6fe;box-shadow:0 14px 30px -12px rgba(124,58,237,.3)}
-.cat .n{font-size:26px}
+.cat .n{font-size:26px;flex-shrink:0}
 .cat.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(max-width:700px){.cat.tools{grid-template-columns:1fr}}
-.cat .count{color:var(--muted);font-size:12.5px;font-weight:500;margin-left:auto;background:var(--bg);border-radius:99px;padding:2px 9px}
-html[lang="en"] .cat{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+@media(max-width:700px){.cat.tools{grid-template-columns:minmax(0,1fr)}}
+.cat .count{color:var(--muted);font-size:12.5px;font-weight:500;margin-left:auto;background:var(--bg);border-radius:99px;padding:2px 9px;flex-shrink:0}
+html[lang="en"] .cat{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 html[lang="en"] .cat a{font-size:14.5px}
 html[lang="en"] .grid{grid-template-columns:repeat(auto-fill,minmax(124px,1fr))}
 html[lang="en"] .grid a small{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:10.5px;line-height:1.35;min-height:2.7em}
@@ -207,11 +207,15 @@ footer{border-top:1px solid var(--line);background:var(--card);margin-top:48px}
 .combo-chip{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:2px 8px;display:inline-flex;align-items:center;gap:6px}
 .combo-chip b{font-size:13px;color:var(--muted);cursor:pointer;font-weight:400}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:18px 0}
-.tcard{display:flex;gap:16px;align-items:center;padding:18px 20px;transition:all .15s}
+.cards.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:820px){.cards.tgrid{grid-template-columns:minmax(0,1fr)}}
+.tcard{display:flex;gap:16px;align-items:center;padding:18px 20px;transition:all .15s;min-width:0}
 .tcard:hover{transform:translateY(-2px);border-color:#ddd6fe;box-shadow:0 14px 30px -12px rgba(124,58,237,.3)}
 .tcard .tbig{font-size:42px;flex-shrink:0}
-.tcard b{font-size:15.5px;display:block;letter-spacing:-.2px}
+.tcard b{font-size:15.5px;display:block;letter-spacing:-.2px;white-space:nowrap}
 .tcard p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.tcard p.tsub{white-space:nowrap;line-height:1.6}
+@media(max-width:560px){.tcard b,.tcard p.tsub{white-space:normal}}
 .article{max-width:720px;margin:0 auto}
 .article .abig{font-size:72px;display:block;margin-bottom:6px}
 .article p{font-size:16px;color:#3f3f46;margin:1em 0}
@@ -243,6 +247,13 @@ const crumbsLd = (items) => ({
   })),
 });
 const clip = (s, max) => (String(s).length > max ? String(s).slice(0, max - 1).trimEnd() + '…' : String(s));
+// 梗解读副标题固定拆两行：官方释义 / 实际用法
+const trendSub = (s) => {
+  const str = String(s);
+  const i = str.indexOf('实际用法：');
+  if (i > 0) return esc(str.slice(0, i)) + '<br>' + esc(str.slice(i));
+  return esc(str);
+};
 
 // ---------- i18n 基础设施 ----------
 // EN_HAS：已有英文版本的中文侧逻辑路径集合。hreflang 与语言切换器全部由它推导，
@@ -526,7 +537,7 @@ idxHtml += `<h2 id="tools">🧩 玩法工具</h2><div class="cat tools">
 <a href="${BASE}/preview.html"><span class="n">👁️</span>多平台渲染预览<span class="count">NEW</span></a>
 <a href="${BASE}/kaomoji/index.html"><span class="n">(๑•̀ㅂ•́)و✧</span>颜文字大全<span class="count">NEW</span></a>
 </div>
-<h2 id="trending">📖 梗解读</h2><div class="cards">${TRENDING.slice(0, 6).map((t) => `<a class="card tcard" href="${BASE}/trending/${t.slug}.html"><span class="tbig">${t.emoji}</span><div><b>${esc(t.title)}</b><p>${esc(t.subtitle)}</p></div></a>`).join('')}</div>
+<h2 id="trending">📖 梗解读</h2><div class="cards tgrid">${TRENDING.slice(0, 6).map((t) => `<a class="card tcard" href="${BASE}/trending/${t.slug}.html"><span class="tbig">${t.emoji}</span><div><b>${esc(t.title)}</b><p class="tsub">${trendSub(t.subtitle)}</p></div></a>`).join('')}</div>
 <p style="margin-top:2px"><a href="${BASE}/trending/index.html" style="color:var(--a1);font-size:14px;font-weight:600">查看全部 ${TRENDING.length} 篇 →</a></p>
 <h2 id="scenes">🎯 按场景找 emoji</h2>
 <div class="cat">${validScenes.map((sc) => `<a href="${BASE}/s/${sc.slug}.html"><span class="n">${sc.icon}</span>${esc(sc.name)}<span class="count">${sc.items.length}</span></a>`).join('')}</div>
@@ -761,7 +772,7 @@ fs.mkdirSync(path.join(OUT, 'trending'), { recursive: true });
       }],
     });
   html += `<div class="hero"><span class="kicker">📖 持续更新</span><h1>Emoji <span class="gradtext">梗解读</span></h1><p>词典告诉你 emoji 本来是什么意思，这里告诉你大家实际在拿它说什么。</p></div>
-<div class="cards">${TRENDING.map((t) => `<a class="card tcard" href="${BASE}/trending/${t.slug}.html"><span class="tbig">${t.emoji}</span><div><b>${esc(t.title)}</b><p>${esc(t.subtitle)}</p></div></a>`).join('')}</div>`;
+<div class="cards tgrid">${TRENDING.map((t) => `<a class="card tcard" href="${BASE}/trending/${t.slug}.html"><span class="tbig">${t.emoji}</span><div><b>${esc(t.title)}</b><p class="tsub">${trendSub(t.subtitle)}</p></div></a>`).join('')}</div>`;
   html += FOOT('..');
   fs.writeFileSync(path.join(OUT, 'trending', 'index.html'), html);
   for (const t of TRENDING) {
