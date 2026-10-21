@@ -215,6 +215,7 @@ footer{border-top:1px solid var(--line);background:var(--card);margin-top:48px}
 .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:16px 0}
 .kitem{font-size:19px;padding:18px 8px;cursor:pointer;transition:all .12s;color:var(--ink)}
 .kitem:hover{transform:translateY(-2px);border-color:#ddd6fe}
+img.emoji{height:1.35em;width:1.35em;vertical-align:-.28em;margin:0 .04em}
 .langsw{flex-shrink:0;font-size:13px;font-weight:600;padding:7px 12px;border:1px solid var(--line);border-radius:99px;color:var(--muted);transition:all .15s;white-space:nowrap}
 .langsw:hover{color:var(--a1);border-color:#ddd6fe;background:#faf5ff}
 `;
