@@ -647,6 +647,9 @@ const decoratePage = head('Emoji 文案装饰器 — 一键给文字配上表情
 <div class="btnrow" style="justify-content:flex-start;display:none" id="copyrow"><button class="btn" id="dcopy">📋 复制成品</button></div>
 <script src="app.js"></script>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+const SCENE={'加班':'😮‍💨','开会':'🗣️','上班':'💼','下班':'🏃','老板':'👔','同事':'👥','聚餐':'🍻','吃饭':'🍚','火锅':'🫕','咖啡':'☕','奶茶':'🧋','外卖':'🥡','减肥':'🏋️','健身':'🏋️','跑步':'🏃','睡觉':'😴','失眠':'🌙','早起':'⏰','迟到':'⏰','堵车':'🚗','地铁':'🚇','下雨':'☔','下雪':'❄️','天气':'🌤️','周末':'🎉','假期':'🏖️','旅行':'🧳','出差':'✈️','电影':'🎬','音乐':'🎧','游戏':'🎮','考试':'📝','学习':'📚','毕业':'🎓','工资':'💰','花钱':'💸','购物':'🛒','生日':'🎂','恋爱':'💕','分手':'💔','吵架':'😤','难过':'😢','开心':'😄','快乐':'😄','累':'😩','困':'😪','好饿':'🍜','谢谢':'🙏','加油':'💪','辞职':'📤','面试':'🤝','生病':'🤒','医院':'🏥','猫':'🐱','狗':'🐶'};
+const STOP='的了我你他她它在是有和就不都也很还这那个吗呢吧';
 let SEG=[];
 const OUT1=document.getElementById('out');
 document.getElementById('go').onclick=async()=>{
@@ -657,13 +660,15 @@ document.getElementById('go').onclick=async()=>{
   if(!SEG.length){OUT1.innerHTML='<div class="note">先输入一点文字～</div>';return;}
   for(const seg of SEG){
     const tokens=[...seg.t.matchAll(/[\\u4e00-\\u9fff]{2}|[a-zA-Z]{3,}/g)].map(m=>m[0].toLowerCase());
-    const scored=IDX.map(e=>{let s=0;for(const tk of tokens)if(e.k.includes(tk))s+=tk.length;return[e,s];}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(x=>x[0]);
+    const singles=[...seg.t.replace(/[^\\u4e00-\\u9fff]/g,'')].filter(ch=>STOP.indexOf(ch)<0);
+    const boost=Object.keys(SCENE).filter(k=>seg.t.indexOf(k)>-1).map(k=>SCENE[k]);
+    const scored=IDX.map(e=>{let s=0;for(const tk of tokens)if(e.k.indexOf(tk)>-1)s+=tk.length*3;for(const ch of singles)if(e.k.indexOf(ch)>-1)s+=1;if(boost.indexOf(e.c)>-1)s+=80;return[e,s];}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(x=>x[0]);
     seg.e=scored.length?scored:[{c:'✨',t:'默认'}, {c:'🌟',t:'备选'}];
   }
   render();
 };
 function render(){
-  OUT1.innerHTML=SEG.map((s,i)=>'<div class="card" style="padding:14px 18px;margin:10px 0"><div style="font-size:16px">'+esc(s.t)+' <span style="font-size:20px">'+s.e[0].c+'</span></div><div class="kw" style="margin:10px 0 0">'+s.e.map((e,j)=>'<span class="j" style="cursor:pointer'+(j===0?';background:#faf5ff;border-color:#e9d5ff':'')+'" data-i="'+i+'" data-j="'+j+'">'+e.c+' '+esc(e.t.slice(0,26))+'</span>').join('')+'</div></div>').join('');
+  OUT1.innerHTML=SEG.map((s,i)=>'<div class="card" style="padding:14px 18px;margin:10px 0"><div style="font-size:16px">'+esc(s.t)+' <span style="font-size:20px">'+s.e[0].c+'</span></div><div class="kw" style="margin:10px 0 0">'+s.e.map((e,j)=>'<span class="j" style="cursor:pointer'+(j===0?';background:#faf5ff;border-color:#e9d5ff':'')+'" data-i="'+i+'" data-j="'+j+'">'+e.c+' '+esc((e.t.indexOf('·')>-1?e.t.split('·')[1]:e.t).trim().slice(0,18))+'</span>').join('')+'</div></div>').join('');
   document.getElementById('copyrow').style.display='flex';
 }
 OUT1.addEventListener('click',e=>{
@@ -697,6 +702,7 @@ const previewPage = head('Emoji 多平台渲染预览 — 发出去别人看到�
 <div id="pvout" style="margin-top:16px"></div>
 <script src="assets/twemoji.min.js"></script>
 <script>
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 const OMOJI=${JSON.stringify(OMOJI)};
 const ROWS=[
   {n:'你的系统（默认）',note:'本机实际显示效果',style:''},
@@ -706,7 +712,7 @@ const ROWS=[
 function imgs(map){
   return [...document.getElementById('pv').value].map(ch=>{
     if(!/\\p{Extended_Pictographic}|\\u200d/u.test(ch))return esc(ch);
-    return map[ch]?'<img src="'+map[ch]+'" style="height:1.4em;vertical-align:-.3em">':'<span style="font-family:\'Apple Color Emoji\',\'Noto Color Emoji\',sans-serif">'+esc(ch)+'</span>';
+    return map[ch]?'<img src="'+map[ch]+'" style="height:1.4em;vertical-align:-.3em">':'<span style="font-family:Apple Color Emoji,Noto Color Emoji,sans-serif">'+esc(ch)+'</span>';
   }).join('');
 }
 function render(){
@@ -714,7 +720,7 @@ function render(){
   document.getElementById('pvout').innerHTML=ROWS.map((r,i)=>'<div class="card" style="padding:16px 20px;margin:10px 0"><b style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">'+r.n+'</b><div style="font-size:20px;margin-top:4px;line-height:2;'+r.style+'" id="pvr'+i+'">'+esc(v)+'</div><span style="font-size:11.5px;color:var(--muted)">'+r.note+'</span></div>').join('')
     +'<div class="card" style="padding:16px 20px;margin:10px 0"><b style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Twemoji / X 风格</b><div style="font-size:20px;margin-top:4px;line-height:2.4" id="pvtw">'+esc(v)+'</div><span style="font-size:11.5px;color:var(--muted)">Twitter/X 开源设计（内置图片）</span></div>'
     +'<div class="card" style="padding:16px 20px;margin:10px 0"><b style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">OpenMoji 风格</b><div style="font-size:20px;margin-top:4px;line-height:2.4" id="pvom">'+esc(v)+'</div><span style="font-size:11.5px;color:var(--muted)">OpenMoji 开源设计（内置图片）</span></div>';
-  if(window.twemoji)twemoji.parse(document.getElementById('pvtw'),{base:'assets/',folder:'svg',ext:'.svg'});
+  if(window.twemoji)twemoji.parse(document.getElementById('pvtw'),{callback:(icon)=>'assets/twemoji/'+icon+'.svg'});
   document.getElementById('pvom').innerHTML=imgs(OMOJI);
 }
 document.getElementById('pv').addEventListener('input',render);
