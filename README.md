@@ -10,17 +10,20 @@
 
 ## 站点内容
 
-| 路径 | 内容 |
-| --- | --- |
-| `/index.html` | 首页：全部 emoji，按 9 大分类分组，客户端搜索 |
-| `/g/<group>.html` | 分类页，带人工导语 |
-| `/e/<name>.html` | 单个 emoji 详情页（约 3600 个），含含义、用法、变体、相关表情 |
-| `/s/<slug>.html` | 场景页：骂人不带脏字、表白、道钱、摸鱼…… |
-| `/kaomoji/` | 颜文字库，按情绪分类 |
-| `/combo.html` | 组合器：拼多字符 emoji 序列 |
-| `/decorate.html` | 装饰器：给文字加 emoji 边框/间隔 |
-| `/trending/` | 趋势榜单 |
-| `/en/` | 英文版（同一套模板，文案独立） |
+| 路径 | 内容 | 页数 |
+| --- | --- | --- |
+| `/index.html` | 首页：全部 emoji，按 9 大分类分组，客户端搜索 | 1 |
+| `/g/<group>.html` | 分类页，带人工导语 | 9 |
+| `/e/<name>.html` | 单个 emoji 详情页，含含义、用法、变体、相关表情 | 1870 |
+| `/s/<slug>.html` | 场景页：骂人不带脏字、表白、道钱、摸鱼…… | 12 |
+| `/kaomoji/` | 颜文字库，按情绪分类 | 10 |
+| `/combo.html` | 组合器：拼多字符 emoji 序列 | 1 |
+| `/decorate.html` | 装饰器：给文字加 emoji 边框/间隔 | 1 |
+| `/preview.html` | 多平台渲染预览 | 1 |
+| `/trending/` | 梗解读 | 11 |
+| `/en/` | 英文版（独立文案，非机翻） | 70 |
+
+中文 1916 页 + 英文 70 页。其中 100 个中文 emoji 页面和 60 个英文页面有**人工撰写的语用解读**（`editorial.mjs` / `editorial-en.mjs`），其余页面走数据驱动模板——这部分只负责长尾覆盖，不指望排名。
 
 ## 构建
 
@@ -39,7 +42,21 @@ SITE_URL=https://your-domain.example npm run gen
 
 不传 `SITE_URL` 时会回落到脚本里的默认值并打印警告——上线前确认它指向你自己的域名。
 
-构建结束会跑一遍自检（内部链接、缺失的 `app.js` 引用、文件数量等），有问题会在终端列出。
+构建结束会跑一遍自检，以下任意一项不通过就 `exit 1`：
+
+- 页面缺 canonical / 缺 JSON-LD
+- 页面有 `BreadcrumbList` 但没有可见面包屑
+- `hreflang` 指向不存在的页面，或英文页缺 `hreflang`
+- 站内链接落到不存在的文件、`app.js` 引用失效
+- 标题重复文本，或 `editorial*.mjs` 里写了不存在的 slug
+
+## 多语言
+
+中文在根路径，英文在 `/en/`（不用子域名，避免权重拆分）。`hreflang` 由构建脚本推导：只有英文页真实存在时，中文页才输出 `zh-CN / en / x-default` 三件套，绝不指向 404。canonical 各语言自引用。
+
+英文内容写进 `editorial-en.mjs`（按英文互联网语境重写，不是中文条目的翻译）。加一个 slug 会自动产出详情页、更新 hreflang、进 `sitemap-en.xml` 和英文首页列表。
+
+站点地图拆成三个：`sitemap-zh.xml` / `sitemap-en.xml` / `sitemap.xml`（索引）。`robots.txt` 只指向索引文件。
 
 ## 部署
 
@@ -49,7 +66,13 @@ SITE_URL=https://your-domain.example npm run gen
 - Build output directory: `site`
 - 环境变量：`SITE_URL=https://你的域名`
 
-`site/_headers` 已包含缓存策略和安全响应头。
+`site/_headers` 已包含缓存策略和安全响应头，`site/404.html` 会被 Pages 自动接管。
+
+上线前确认三件事：
+
+1. 域名已解除停放，根路径返回的是本站首页（不是停放商的跳转页）
+2. `curl -s https://你的域名/sitemap.xml | head -3` 返回 `<sitemapindex>`
+3. 构建时 `SITE_URL` 用的是真实域名，否则 canonical 全长在错的地方
 
 ## 目录结构
 
@@ -61,7 +84,8 @@ trending.mjs        趋势榜单数据
 editorial.mjs       中文长尾文案
 editorial-en.mjs    英文长尾文案
 i18n.mjs            UI 文案 / 分类名 / 页面元信息（zh + en）
-og.html             og:image 的源模板
+og.html             og:image 的源模板（改完用无头 Chrome 重新截 og.png）
+og.png              1200×630 分享图，构建时复制进 site/
 site/               构建产物，不入库
 ```
 

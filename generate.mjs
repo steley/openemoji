@@ -106,6 +106,8 @@ const CSS = `
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* 固定 header 会盖住锚点目标，给所有 anchor 目标留出高度 */
+:target{scroll-margin-top:92px}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 ::selection{background:#ede9fe}
@@ -144,6 +146,8 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .cat a{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:15.5px;font-weight:600;display:flex;gap:12px;align-items:center;transition:all .15s;box-shadow:var(--shadow)}
 .cat a:hover{transform:translateY(-2px);border-color:#ddd6fe;box-shadow:0 14px 30px -12px rgba(124,58,237,.3)}
 .cat .n{font-size:26px}
+.cat.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:700px){.cat.tools{grid-template-columns:1fr}}
 .cat .count{color:var(--muted);font-size:12.5px;font-weight:500;margin-left:auto;background:var(--bg);border-radius:99px;padding:2px 9px}
 html[lang="en"] .cat{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 html[lang="en"] .cat a{font-size:14.5px}
@@ -516,7 +520,7 @@ idxHtml += `<div class="hero">
 if (newEmojis.length) {
   idxHtml += `<h2 id="new">🆕 最新 emoji（Emoji 15.1 – 17.0）</h2><div class="grid">${newEmojis.map(gridItem).join('')}</div>`;
 }
-idxHtml += `<h2>🧩 玩法工具</h2><div class="cat">
+idxHtml += `<h2 id="tools">🧩 玩法工具</h2><div class="cat tools">
 <a href="${BASE}/combo.html"><span class="n">🧩</span>Emoji 组合生成器<span class="count">NEW</span></a>
 <a href="${BASE}/decorate.html"><span class="n">✍️</span>文案装饰器<span class="count">NEW</span></a>
 <a href="${BASE}/preview.html"><span class="n">👁️</span>多平台渲染预览<span class="count">NEW</span></a>
@@ -592,12 +596,22 @@ const toolLd = (path, name, desc) => ({
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'CNY' },
 });
 
+// 面包屑必须与 BreadcrumbList 结构化数据一致：JSON-LD 声明了层级，页面上就得看得见
+const TOOL_LIST = [
+  { file: '/combo.html', name: 'Emoji 组合生成器', icon: '🧩' },
+  { file: '/decorate.html', name: '文案装饰器', icon: '✍️' },
+  { file: '/preview.html', name: '多平台渲染预览', icon: '👁️' },
+];
+const crumbsBar = (name) => `<div class="crumbs"><a href="${BASE}/index.html">首页</a><span class="sep">/</span>${esc(name)}</div>`;
+const relatedTools = (cur) => `<h2 style="margin-top:40px">其他玩法工具</h2>\n<div class="cat" style="white-space:nowrap">${TOOL_LIST.filter((t) => t.file !== cur).map((t) => `<a href="${BASE}${t.file}"><span class="n">${t.icon}</span>${esc(t.name)}</a>`).join('')}</div>`;
+
 const comboPage = head('Emoji 组合生成器 — 拼出你的表情暗号 | OpenEmoji',
   '选择多个 emoji 拼成组合短句或暗号，一键复制。支持搜索添加、随机组合，所有操作在本地完成。', '', {
     path: '/combo.html',
     ld: [crumbsLd([['首页', '/'], ['Emoji 组合生成器', '/combo.html']]),
       toolLd('/combo.html', 'Emoji 组合生成器', '把多个 emoji 拼成组合短句或暗号，一键复制。')],
   }) + `
+${crumbsBar('Emoji 组合生成器')}
 <div class="hero"><span class="kicker">🧩 玩法工具</span><h1>Emoji <span class="gradtext">组合生成器</span></h1><p>把几个 emoji 拼成短句或暗号：🔥💀＝笑死，☕🫠＝周一上班。点击下方表情添加，顺序可调。</p></div>
 <div class="card" style="padding:18px 20px">
   <div id="seq" class="combo-seq"><span style="color:var(--muted);font-size:14px">从下面选表情，点这里开始组合…</span></div>
@@ -632,7 +646,7 @@ EQ.addEventListener('input',async()=>{
   ER.innerHTML=emojiSearch.query(v).slice(0,18).map(e=>'<a href="javascript:void(0)" data-e="'+e.c+'" title="'+e.t.replace(/"/g,'')+'">'+e.c+'</a>').join('');
 });
 ER.addEventListener('click',e=>{const a=e.target.closest('[data-e]');if(a){SEQ.push(a.dataset.e);render();}});
-</script>` + FOOT();
+</script>` + relatedTools('/combo.html') + FOOT();
 fs.writeFileSync(path.join(OUT, 'combo.html'), comboPage);
 
 const decoratePage = head('Emoji 文案装饰器 — 一键给文字配上表情 | OpenEmoji',
@@ -641,6 +655,7 @@ const decoratePage = head('Emoji 文案装饰器 — 一键给文字配上表情
     ld: [crumbsLd([['首页', '/'], ['Emoji 文案装饰器', '/decorate.html']]),
       toolLd('/decorate.html', 'Emoji 文案装饰器', '输入一段文案，自动按句推荐 emoji 并生成成品。')],
   }) + `
+${crumbsBar('Emoji 文案装饰器')}
 <div class="hero"><span class="kicker">✍️ 玩法工具</span><h1>Emoji <span class="gradtext">文案装饰器</span></h1><p>粘贴你的文案，自动按句子匹配 emoji 候选，点选替换，复制成品。适合朋友圈、小红书、微博。</p></div>
 <textarea class="search" id="src" rows="4" style="border-radius:14px;line-height:1.7" placeholder="例如：今天加班到十点，明天还要早起开会…"></textarea>
 <div class="btnrow" style="justify-content:flex-start;margin:14px 0"><button class="btn" id="go">✨ 生成推荐</button></div>
@@ -680,7 +695,7 @@ document.getElementById('dcopy').onclick=function(){
   const text=SEG.map(s=>s.t+' '+s.e[0].c).join('，');
   navigator.clipboard.writeText(text).then(()=>{this.textContent='✅ 已复制';this.classList.add('ok');setTimeout(()=>{this.textContent='📋 复制成品';this.classList.remove('ok')},1500)});
 };
-</script>` + FOOT();
+</script>` + relatedTools('/decorate.html') + FOOT();
 fs.writeFileSync(path.join(OUT, 'decorate.html'), decoratePage);
 
 // localize twemoji parser for preview page
@@ -698,6 +713,7 @@ const previewPage = head('Emoji 多平台渲染预览 — 发出去别人看到�
     ld: [crumbsLd([['首页', '/'], ['多平台渲染预览', '/preview.html']]),
       toolLd('/preview.html', 'Emoji 多平台渲染预览', '预览 emoji 在 Apple、Windows、Noto、Twemoji 下的显示差异。')],
   }) + `
+${crumbsBar('多平台渲染预览')}
 <div class="hero"><span class="kicker">👁️ 预览工具</span><h1>Emoji <span class="gradtext">多平台渲染预览</span></h1><p>同一段文字，不同设备显示的 emoji 可能完全不一样。这里模拟四种主要风格，避免发出意外的表情。</p></div>
 <textarea class="search" id="pv" rows="3" style="border-radius:14px;line-height:1.8" placeholder="输入带 emoji 的文字，例如：今晚聚餐🍜🧋 老地方见✌️">今晚聚餐🍜🧋 老地方见✌️</textarea>
 <div id="pvout" style="margin-top:16px"></div>
@@ -726,7 +742,7 @@ function render(){
 }
 document.getElementById('pv').addEventListener('input',render);
 render();
-</script>` + FOOT();
+</script>` + relatedTools('/preview.html') + FOOT();
 fs.writeFileSync(path.join(OUT, 'preview.html'), previewPage);
 
 // ---------- trending (梗解读) ----------
@@ -888,7 +904,8 @@ for (const e of all) {
 ${ed ? `<h2>${esc(nameCn)} 是什么意思、怎么用</h2>
 <p class="lead">${esc(ed.mean)}</p>
 <ul class="uses">${ed.use.map((u) => `<li>${esc(u)}</li>`).join('')}</ul>
-${ed.note ? `<div class="note"><b>容易踩的坑</b>${esc(ed.note)}</div>` : ''}` : ''}
+${ed.note ? `<div class="note"><b>容易踩的坑</b>${esc(ed.note)}</div>` : ''}
+<p style="color:var(--muted);font-size:14px">想把它和别的表情拼成一句暗号？用 <a href="${BASE}/combo.html" style="color:var(--a1)">Emoji 组合生成器</a> 拼好再复制。</p>` : ''}
 <div class="note"><b>怎么用？</b>点击上方按钮复制 ${e.emoji}，直接粘贴到微信、QQ、抖音、小红书、微博、WhatsApp、Instagram 或任何文本框。emoji 是标准 Unicode 字符，跨平台通用；iOS / Android / Windows 会显示各自的设计风格。</div>
 ${sup ? `<div class="note"><b>显示兼容性</b>这个 emoji 属于 Emoji ${esc(e.emoji_version)}（${sup[0]} 年加入），${sup[1]} 及以上、${sup[2]} 及以上可正常显示；更老的系统会显示成方框或黑白字符。</div>` : ''}
 <h2>不同设计风格对比</h2>
@@ -1154,7 +1171,7 @@ if (enUrls.length !== 1 + groups.length + EN_EMOJI.length)
   problems.push(`sitemap-en urls ${enUrls.length} mismatch`);
 // broken-link scan across all generated html + SEO 基础项校验
 const badRe = /(href|src)="[^"]*(?:undefined|\/e\/|\/s\/|\/g\/)[^"]*undefined[^"]*"/;
-let badCount = 0, noCanon = 0, noJsonLd = 0, dupTitle = 0, badScript = 0, longTitle = 0;
+let badCount = 0, noCanon = 0, noJsonLd = 0, dupTitle = 0, badScript = 0, longTitle = 0, ldNoCrumbs = 0;
 let hreBad = 0, hrePages = 0, enNoHre = 0, badLink = 0;
 const urlToFile = (href) => {
   const rel = href.replace(SITE_URL, '');
@@ -1169,6 +1186,8 @@ const scan = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: tru
   const is404 = f.name === '404.html';
   if (!is404 && !html.includes('rel="canonical"')) { noCanon++; if (noCanon <= 3) console.warn(`  ⚠ no canonical: ${p}`); }
   if (!is404 && !html.includes('application/ld+json')) { noJsonLd++; if (noJsonLd <= 3) console.warn(`  ⚠ no JSON-LD: ${p}`); }
+  // 声明了 BreadcrumbList 就必须有可见面包屑，否则结构化数据与页面内容不一致
+  if (!is404 && html.includes('"@type": "BreadcrumbList"') && !html.includes('class="crumbs"')) { ldNoCrumbs++; if (ldNoCrumbs <= 3) console.warn(`  ⚠ BreadcrumbList without visible crumbs: ${p}`); }
   const t = (html.match(/<title>(.*?)<\/title>/) || [])[1] || '';
   if (/(\S{20,})\s\1/.test(t)) { dupTitle++; if (dupTitle <= 3) console.warn(`  ⚠ duplicated title: ${p} → ${t}`); }
   if (t.length > 65) { longTitle++; }
@@ -1195,6 +1214,7 @@ const scan = (dir) => { for (const f of fs.readdirSync(dir, { withFileTypes: tru
 scan(OUT);
 if (badCount) problems.push(`${badCount} html files contain undefined refs`);
 if (noCanon) problems.push(`${noCanon} html files missing canonical`);
+if (ldNoCrumbs) problems.push(`${ldNoCrumbs} pages declare BreadcrumbList but show no visible breadcrumb`);
 if (noJsonLd) problems.push(`${noJsonLd} html files missing JSON-LD`);
 if (dupTitle) problems.push(`${dupTitle} html files have duplicated title text`);
 if (badScript) problems.push(`${badScript} html files reference a missing app.js`);
