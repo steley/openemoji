@@ -181,13 +181,24 @@ html[lang="en"] .grid a small{white-space:normal;display:-webkit-box;-webkit-lin
 .render .imgwrap.fail::after{content:"无此字符";font-size:12px;color:var(--muted)}
 .render b{display:block;font-size:13.5px}
 .render span{font-size:11.5px;color:var(--muted)}
-footer{border-top:1px solid var(--line);background:var(--card)}
-.fwrap{max-width:1060px;margin:0 auto;padding:28px 24px;color:var(--muted);font-size:13px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+footer{border-top:1px solid var(--line);background:var(--card);margin-top:48px}
+.fwrap{max-width:1060px;margin:0 auto;padding:32px 24px 36px;color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:14px}
+.ftop{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
 .fwrap .logo{font-size:15px}
-.fwrap .cred{flex-basis:100%;font-size:12px;opacity:.85}
-.fwrap .cred a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-.fwrap nav{margin-left:auto;display:flex;gap:16px}
-.fwrap nav a:hover{color:var(--a1)}
+.ftop nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;font-size:13px}
+.ftop nav a{color:inherit;text-decoration:none}
+.ftop nav a:hover{color:var(--a1)}
+.fmeta{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;line-height:1.8}
+.fmeta a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+.fmeta a:hover{color:var(--a1);border-bottom-color:currentColor}
+.fsep{opacity:.5;user-select:none}
+.fcred{font-size:11.5px;line-height:1.8;opacity:.72}
+.fcred a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.fcred a:hover{color:var(--a1)}
+@media (max-width:560px){
+  .ftop{gap:12px}
+  .ftop nav{margin-left:0;width:100%;gap:14px}
+}
 .combo-seq{min-height:64px;border:1px dashed var(--line);border-radius:14px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:30px}
 .combo-chip{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:2px 8px;display:inline-flex;align-items:center;gap:6px}
 .combo-chip b{font-size:13px;color:var(--muted);cursor:pointer;font-weight:400}
@@ -294,12 +305,22 @@ const FOOT = (p = '', loc = DEFAULT_LOCALE) => {
   const jsSrc = loc === 'en' ? '/app.js' : `${p || '.'}/app.js`;
   return `</main>
 <footer><div class="fwrap">
-  <a class="logo" href="${R}/index.html"><span class="dot" style="width:24px;height:24px;font-size:13px;border-radius:7px">😀</span>Open<b>Emoji</b></a>
-  <span>${esc(U.footerNote)}</span>
-  <span class="cred">${loc === 'en'
-    ? 'Emoji artwork: <a href="https://openmoji.org/" rel="noopener">OpenMoji</a> (CC BY-SA 4.0) · <a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a> (CC BY 4.0) · <a href="https://github.com/googlefonts/noto-emoji" rel="noopener">Noto Emoji</a> (Apache-2.0)'
-    : '图形来源：<a href="https://openmoji.org/" rel="noopener">OpenMoji</a>（CC BY-SA 4.0）· <a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a>（CC BY 4.0）· <a href="https://github.com/googlefonts/noto-emoji" rel="noopener">Noto Emoji</a>（Apache-2.0）'}</span>
-  <nav>${U.nav.map(([t, href]) => `<a href="${R}${href}">${esc(t)}</a>`).join('')}</nav>
+  <div class="ftop">
+    <a class="logo" href="${R}/index.html"><span class="dot" style="width:24px;height:24px;font-size:13px;border-radius:7px">😀</span>Open<b>Emoji</b></a>
+    <nav>${U.nav.map(([t, href]) => `<a href="${R}${href}">${esc(t)}</a>`).join('')}</nav>
+  </div>
+  <div class="fmeta">
+    <span>${esc(U.footerNote)}</span>
+  </div>
+  <div class="fmeta">
+    <span>${loc === 'en' ? 'Contact' : '联系'}</span>
+    <a href="mailto:hello@openemoji.com">hello@openemoji.com</a>
+    <span class="fsep">·</span>
+    <a href="https://github.com/steley/openemoji" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div class="fcred">${loc === 'en'
+    ? 'Emoji artwork: <a href="https://openmoji.org/" target="_blank" rel="noopener">OpenMoji</a> (CC BY-SA 4.0) · <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener">Twemoji</a> (CC BY 4.0) · <a href="https://github.com/googlefonts/noto-emoji" target="_blank" rel="noopener">Noto Emoji</a> (Apache-2.0)'
+    : '图形来源：<a href="https://openmoji.org/" target="_blank" rel="noopener">OpenMoji</a>（CC BY-SA 4.0）· <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener">Twemoji</a>（CC BY 4.0）· <a href="https://github.com/googlefonts/noto-emoji" target="_blank" rel="noopener">Noto Emoji</a>（Apache-2.0）'}</div>
 </div></footer>
 <script src="${jsSrc}"></script>
 <script>
@@ -481,6 +502,7 @@ let idxHtml = head('OpenEmoji — Emoji 意思大全 · 在线查询与一键复
       inLanguage: 'zh-CN', description: `${all.length} 个 emoji 的中英文含义、关键词与代码点，点击即复制。`,
     }, {
       '@context': 'https://schema.org', '@type': 'Organization', name: 'OpenEmoji', url: SITE_URL + '/', logo: SITE_URL + '/favicon.svg',
+      email: 'hello@openemoji.com', sameAs: ['https://github.com/steley/openemoji'],
     }],
   });
 idxHtml += `<div class="hero">

@@ -73,6 +73,11 @@ site/               构建产物，不入库
 - 新增文案请保持和现有风格一致：说人话，讲具体用法，别写"这个表情表示开心"这种废话。
 - 提交前跑一次 `npm run gen`，确认自检通过。
 
+## 联系
+
+- 邮箱：hello@openemoji.com
+- 仓库：https://github.com/steley/openemoji
+
 ## 许可
 
 - 代码：MIT（`LICENSE`）
