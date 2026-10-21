@@ -1,7 +1,7 @@
 // 梗解读数据：emoji 在中文互联网的实际用法 vs 官方释义
 export const TRENDING = [
   {
-    slug: 'skull', emoji: '💀', title: '💀 骷髅：中文互联网第一「笑」emoji',
+    slug: 'skull', emoji: '💀', title: '骷髅：中文互联网第一「笑」表情',
     subtitle: '官方释义：死亡。实际用法：笑死了。',
     body: [
       '💀 的官方含义是「骷髅/死亡」，但在中文语境里它几乎从不表示恐怖——它是「笑死了」的终极形态。当 😂 显得年代久远、🤣 显得用力过猛时，年轻人选择 💀：一种冷静、克制、带着一点「这太好笑了我已经死了」的疲惫感。',
@@ -10,7 +10,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'saluting-face', emoji: '🫡', title: '🫡 敬礼：体面告辞的仪式感',
+    slug: 'saluting-face', emoji: '🫡', title: '敬礼：体面告辞的仪式感',
     subtitle: '官方释义：敬礼。实际用法：「收到，这就撤」。',
     body: [
       '🫡 官方是「敬礼的脸」，网络用法核心是「告辞的仪式感」——下班了、退群了、这话题聊不下去了、老板画的饼我吃不下去了，一个 🫡 全都涵盖。',
@@ -19,7 +19,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'melting-face', emoji: '🫠', title: '🫠 融化脸：当代打工人的精神状态',
+    slug: 'melting-face', emoji: '🫠', title: '融化脸：当代打工人的精神状态',
     subtitle: '官方释义：高温融化。实际用法：人已经化掉了。',
     body: [
       '🫠 是 Emoji 14.0 的角色，官方描述是「高温、尴尬到融化」。中文语境里它精准概括了一种状态：还没崩溃，但已经在崩溃的路上了——加班到晚上九点、周一早八、连续第三天出门全勤，都是 🫠 的适用场景。',
@@ -28,7 +28,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'clown-face', emoji: '🤡', title: '🤡 小丑：自嘲的最高形式',
+    slug: 'clown-face', emoji: '🤡', title: '小丑：自嘲的最高形式',
     subtitle: '官方释义：马戏团演员。实际用法：我又自作多情了。',
     body: [
       '🤡 在中文互联网完成了一次彻底的语义迁移：从「马戏团演员」变成「以为自己很重要/被爱/有戏，实际上没有」的人。等消息等到凌晨、被放鸽子、单方面的热情，最后一个 🤡 发给自己，胜过千言万语。',
@@ -37,7 +37,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'rolling_on_the_floor_laughing', emoji: '🤣', title: '🤣 笑哭平替？不，是长辈专属',
+    slug: 'rolling_on_the_floor_laughing', emoji: '🤣', title: '笑哭平替？不，是长辈专属',
     subtitle: '官方释义：笑得在地上打滚。实际用法：年龄探测器。',
     body: [
       '一个有趣的分层：🤣 在家族群和中年用户中是「真觉得好笑」的表达，在年轻人语境里则显得过于外放、甚至有点「努力搞笑」的意味。年轻人更爱 💀（冷笑到死）和 😭（好笑到哭）。',
@@ -46,7 +46,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'peach', emoji: '🍑', title: '🍑 桃子：没人用它聊水果',
+    slug: 'peach', emoji: '🍑', title: '桃子：没人用它聊水果',
     subtitle: '官方释义：桃子。实际用法：懂的都懂。',
     body: [
       '🍑 是「emoji 语义漂移」最经典的案例：官方画的是一个水灵灵的桃子，全球网友一致决定用它指代臀部（以及相关暗示）。中文语境同样如此——当一个🍑单独出现在聊天里，99% 与水果无关。',
@@ -55,7 +55,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'shaking-face', emoji: '🫨', title: '🫨 震动脸：被炸到语无伦次',
+    slug: 'shaking-face', emoji: '🫨', title: '震动脸：被炸到语无伦次',
     subtitle: '官方释义：震动。实际用法：信息量过大，正在缓冲。',
     body: [
       '🫨 是 Emoji 15.0 的新角色，官方含义「震动/摇晃」。它天然适合表达「受到了巨大冲击」：被离谱消息炸到、看到不该看的、PTSD 式回忆袭来——整个人都在物理性地抖。',
@@ -64,7 +64,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'moai', emoji: '🗿', title: '🗿 摩艾石像：冷脸之王',
+    slug: 'moai', emoji: '🗿', title: '摩艾石像：冷脸之王',
     subtitle: '官方释义：复活节岛石像。实际用法：无语/面无表情/一切尽在不言中。',
     body: [
       '🗿 是 emoji 里的「面瘫」：不高兴、不难过、不惊讶，就是直勾勾地看着你。收到离谱发言时回 🗿，等于说「我在看着你，我在无言地看着你」。',
@@ -73,7 +73,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'loudly_crying_face', emoji: '😭', title: '😭 大哭：早已不是悲伤',
+    slug: 'loudly_crying_face', emoji: '😭', title: '大哭：早已不是悲伤',
     subtitle: '官方释义：放声大哭。实际用法：可爱/感动/笑到哭/emo 万金油。',
     body: [
       '😭 大概是语义漂移最猛的表情：官方是「大哭」，实际用法覆盖「太可爱了！！」「太感人了」「太好笑了」「太惨了」等一切强烈情绪。它表达的不是悲伤，而是「情绪浓度超标」。',
@@ -82,7 +82,7 @@ export const TRENDING = [
     ],
   },
   {
-    slug: 'new-moon-face', emoji: '🌚', title: '🌚 新月脸：阴阳怪气的祖师爷',
+    slug: 'new-moon-face', emoji: '🌚', title: '新月脸：阴阳怪气的祖师爷',
     subtitle: '官方释义：新月。实际用法：意味深长的坏笑/无语凝噎。',
     body: [
       '🌚 长着一张「意味深长的脸」，中文互联网把它开发成了阴阳怪气的鼻祖：呵呵、哦、行吧、你说得对——每一句配上 🌚 都能瞬间变味。',

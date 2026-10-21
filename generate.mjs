@@ -215,7 +215,7 @@ footer{border-top:1px solid var(--line);background:var(--card);margin-top:48px}
 .tcard b{font-size:15.5px;display:block;letter-spacing:-.2px;white-space:nowrap}
 .tcard p{margin:2px 0 0;font-size:13px;color:var(--muted)}
 .tcard p.tsub{white-space:nowrap;line-height:1.6}
-@media(max-width:560px){.tcard b,.tcard p.tsub{white-space:normal}}
+@media(max-width:560px){.tcard b{font-size:14.5px}.tcard p.tsub{white-space:normal}}
 .article{max-width:720px;margin:0 auto}
 .article .abig{font-size:72px;display:block;margin-bottom:6px}
 .article p{font-size:16px;color:#3f3f46;margin:1em 0}
