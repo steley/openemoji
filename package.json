@@ -1,0 +1,17 @@
+{
+  "name": "openemoji",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node generate.mjs"
+  },
+  "dependencies": {
+    "cldr-annotations-full": "^45.0.0",
+    "unicode-emoji-json": "^0.4.0"
+  },
+  "devDependencies": {
+    "@discordapp/twemoji": "14.0.2",
+    "emoji-datasource-google": "16.0.0",
+    "openmoji": "15.0.0"
+  }
+}
